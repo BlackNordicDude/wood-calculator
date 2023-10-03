@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import {Container} from '@mui/material';
+import Board from './components/Board/board';
+import Result from './components/Result/result';
+import { createContext, useState } from 'react';
+
+
+export const ResultContext = createContext(null);
+export const RemainsContext = createContext(null);
 
 function App() {
+  const [result, setResult] = useState([]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container sx={{
+      maxWidth: 'md',
+      height: '100vh',
+      p: 5,
+      position: 'relative'
+    }}>
+      <ResultContext.Provider value={result}>
+          <Board refreshResult={setResult} />
+          <Result refreshResult={setResult}/>
+      </ResultContext.Provider>
+    </Container>
   );
 }
 
