@@ -2,10 +2,16 @@ import { Box, Button, Typography } from "@mui/material"
 import { useContext, useState } from "react";
 import { ResultContext } from "../../App";
 
+const boxStyle = {
+    border: '1px solid black',
+    flex: '1 1',
+    p: 3
+}
+
 const Display = () => {
     const result = useContext(ResultContext)
-
-    const [dataForDisplay, setDataForDisplay] = useState({counter: 0, remains: []});
+    const [counter, setCounter] = useState([])
+    const [remains, setRemains] = useState([]);
 
     const formationRemainsData = (array) => {
         let result = {};
@@ -16,46 +22,49 @@ const Display = () => {
     }
 
     const calcResult = (result) => {
-        let total = {};
-        const totalLengths = {};
+        const boardsBySize = {};
+        const totalBoards = {};
+        const counter = {};
+        let remains = {}; 
+
         result.forEach(el => {
-            total[el.size] = total[el.size] ? [...total[el.size], el] : total[el.size] = [el]
+            boardsBySize[el.size] = boardsBySize[el.size] ? [...boardsBySize[el.size], el] : boardsBySize[el.size] = [el]
+            if (!counter[el.type])  {
+                counter[el.type] = 0;
+            }
         })
-        for (let size in total) {
-            total[size].forEach(el => {
+        for (let size in boardsBySize) {
+            boardsBySize[size].forEach(el => {
                 for (let i = 0; i < el.amount; i++) {
-                    totalLengths[size] = totalLengths[size] ? [...totalLengths[size], el.length] : [el.length]
+                    totalBoards[size] = totalBoards[size] ? [...totalBoards[size], el] : [el]
                 }
             })
         }
-
-        let remains = {}; 
-        let counter = 0;
-        console.log(total);
-        for (let key in totalLengths) {
-            const lengthOfCurrentSize = totalLengths[key];
-            for ( let i = 0; i < lengthOfCurrentSize.length; i++) {
-                const currentEl = lengthOfCurrentSize[i];
-                    if (currentEl > 3000) {
-                    counter++;
-                    remains[key] = remains[key] ? [...remains[key], 6000 - currentEl] : [6000 - currentEl]
+        console.log(totalBoards);        
+        for (let key in totalBoards) {
+            const boarsOfCurrentSize = totalBoards[key];
+            for ( let i = 0; i < boarsOfCurrentSize.length; i++) {
+                const {length, type} = boarsOfCurrentSize[i];
+                    if (length > 3000) {
+                    counter[type]++
+                    remains[key] = remains[key] ? [...remains[key], 6000 - length] : [6000 - length]
                 } else {
                     if (remains[key]) {
                         remains[key].sort((a, b) => a - b)
                         let index;
                         let flag = remains[key].some((el, idx) => {
                             index = idx;
-                            return el > currentEl
+                            return el > length
                         }) 
                         if (flag) {
-                            remains[key][index] -= currentEl
+                            remains[key][index] -= length
                         } else {
-                            counter++;
-                            remains[key] = remains[key] ? [...remains[key], 6000 - currentEl] : [6000 - currentEl]
+                            counter[type]++;
+                            remains[key] = remains[key] ? [...remains[key], 6000 - length] : [6000 - length]
                         }
                     } else {
-                        counter++;
-                        remains[key] = [6000 - currentEl]
+                        counter[type]++;
+                        remains[key] = [6000 - length]
                     }
                     
                 }
@@ -64,29 +73,25 @@ const Display = () => {
         for (let key in remains) {
             remains[key] = Object.entries(formationRemainsData(remains[key]))
         }
-        setDataForDisplay({
-            counter: counter,
-            remains: Object.entries(remains)
-        })
+
+        setCounter(Object.entries(counter))
+        setRemains(Object.entries(remains))
     }
 
     
 
     return (
         <>
-        <Box sx={{
-            border: '1px solid black',
-            flex: '1 1'
-        }}> 
-            Потребуется {dataForDisplay.counter} досок.
+        <Box sx={boxStyle}> 
+            Потребуется:
+            {
+                counter.map((el,idx) => <Typography key={idx}> Тип: {el[0]} - {el[1]}шт.</Typography>)
+            }
         </Box>
-        <Box  sx={{
-            border: '1px solid black',
-            flex: '1 1'
-        }}>
+        <Box  sx={boxStyle}>
             Остатки:
             {
-               dataForDisplay.remains.map((el,idx) => <Typography key={idx}> Сечение: {el[0]}мм { el[1].map((el, idx) => <Typography key={idx}>&#8226; {el[0]}мм {el[1]}шт.</Typography>)}</Typography>)
+               remains.map((el,idx) => <Typography key={idx}> Сечение: {el[0]}мм { el[1].map((el, idx) => <Typography key={idx}>&#8226; {el[0]}мм {el[1]}шт.</Typography>)}</Typography>)
             }
         </Box>
 
