@@ -1,4 +1,4 @@
-import { Box, TextField, Button, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
+import { Box, TextField, Button, } from '@mui/material';
 import { useForm } from '../../hooks';
 import { useContext } from 'react';
 import { ResultContext } from '../../App';
@@ -18,7 +18,8 @@ const Board = ({refreshResult}) => {
     const addBoard = (values) => {
         const {length, amount, height, width, type} = values
         if (length > 0 && amount > 0 && height > 0 && width > 0 && type !== '' && length <= 6000) {
-            const dataForUpdating = {length, amount, type, size: height >= width ? `${height}x${width}` : `${width}x${height}`}
+            console.log(typeof height);
+            const dataForUpdating = {length, amount, type, size: +height >= +width ? `${height}x${width}` : `${width}x${height}`}
             refreshResult([...result, dataForUpdating]) 
         } else {
             alert('Incorrect input!')
@@ -28,12 +29,11 @@ const Board = ({refreshResult}) => {
 
     return (
         <Box sx={{
-          minHeight: 100,
+          height: 50,
           p: 4,
           borderBottom: '2px solid rgba(0, 0, 0, 0.3)',
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center',
           bgcolor: '#ceeef5'
         }}>
             <Box sx={{
@@ -45,7 +45,9 @@ const Board = ({refreshResult}) => {
                     type='number'
                     variant='standard'
                     label='Длина'
+                    error={values.length > 6000 ? true : false}
                     value={values.length || ''}
+                    helperText={values.length > 6000 ? 'Куда лезешь?!' : false}
                     onChange={handleChange}
                 />
             </Box>
@@ -83,22 +85,14 @@ const Board = ({refreshResult}) => {
                 />
             </Box>
             <Box sx={{ minWidth: 170}}>
-                <FormControl fullWidth>
-                    <InputLabel id='type'>Тип</InputLabel>
-                    <Select
-                        name='type'
-                        labelId="type"
-                        label="Тип"
-                        value={values.type || ''}
-                        onChange={handleChange}
-                    >
-                        <MenuItem value={'Стойка'}>Стойка</MenuItem>
-                        <MenuItem value={'Верх-Низ'}>Верх-Низ</MenuItem>
-                        <MenuItem value={'Пояс'}>Пояс</MenuItem>
-                        <MenuItem value={'Раскос'}>Раскос</MenuItem>
-                        <MenuItem value={'Ригель'}>Ригель</MenuItem>
-                    </Select>
-                </FormControl>
+                <TextField
+                    name='type'
+                    type='string'
+                    variant='standard'
+                    label='Тип'
+                    value={values.type || ''}
+                    onChange={handleChange}
+                />
             </Box>
             <Button
                 variant='contained'

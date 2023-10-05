@@ -13,8 +13,10 @@ function App() {
     <Container sx={{
       maxWidth: 'md',
       height: '100vh',
-      p: 5,
-      position: 'relative'
+      p: 3,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between'
     }}>
       <ResultContext.Provider value={result}>
           <Board refreshResult={setResult} />

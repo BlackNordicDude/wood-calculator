@@ -1,17 +1,11 @@
-import { Box, Button, Container, Typography } from "@mui/material"
+import { Box, Button, Typography as T} from "@mui/material"
 import { useContext } from "react"
 import { ResultContext } from "../../App"
 import Display from "../Display/display"
 
-
 const Result = ({refreshResult}) => {
 
     const result = useContext(ResultContext)
-
-    const TextStyle = {
-        fontSize: '18px',
-        fontWeight: 700,
-    }
 
     const deleteBoard = (originIdx) => {
         refreshResult([...result].filter((el, idx) => {
@@ -22,22 +16,12 @@ const Result = ({refreshResult}) => {
     
 
     return (
-        <Container 
-        sx={{
-            maxWidth: '100%',
-            position: 'absolute',
-            bottom: 15,
-            left: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 5
-        }}>
+        <>
            <Box 
             sx={{
                 maxHeight: 300,
                 width: '100%',
-                overflowY: 'scroll',
-                overflowX: 'hidden',
+                overflowY: 'auto',
             }}>
                 {
                 result.map((el, idx) => {
@@ -46,22 +30,22 @@ const Result = ({refreshResult}) => {
                             key={idx}
                             sx={{
                                 minHeight: 50,
+                                boxSizing: 'border-box',
                                 width: '100%',
                                 m: 0,
-                                py: 3,
+                                py: 1,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                gap: 1,
+                                gap: 3,
                                 bgcolor: '#ceeef5',
                                 borderBottom: '2px solid rgba(0, 0, 0, 0.3)',
                             }}
                         >
-                            <Typography variant="body1" sx={{...TextStyle, textDecoration: 'underline'}}>{idx + 1}.</Typography>
-                            <Typography variant="body1" sx={TextStyle}>Тип: {el.type}</Typography>
-                            <Typography variant="body1" sx={TextStyle}>Количество: {el.amount} </Typography>
-                            <Typography variant="body1" sx={TextStyle}>Длина: {el.length} </Typography>
-                            <Typography variant="body1" sx={TextStyle}>Сечение: {el.size} </Typography>
+                            <T>Тип: {el.type}</T>
+                            <T>Количество: {el.amount} </T>
+                            <T>Длина: {el.length} </T>
+                            <T>Сечение: {el.size} </T>
                             <Button variant='contained' sx={{px: 1, minWidth: '30px'}} onClick={() => deleteBoard(idx)}>X</Button>
                         </Box>
                     )}
@@ -69,17 +53,17 @@ const Result = ({refreshResult}) => {
             </Box> 
             <Box
                 sx={{
-                    height: 400,
-                    width: '100%',
                     bgcolor: '#ceeef5',
-                    boxSizing: 'border-box',
-                    p: 2,
                     display: 'flex',
-                    justifyContent: 'space-around',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    maxHeight: 400,
+                    borderTop: '2px solid rgba(0, 0, 0, 0.3)',
+
                 }}>
                    <Display />
             </Box>
-        </Container>
+        </>
     )
 }
 

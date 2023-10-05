@@ -1,11 +1,23 @@
-import { Box, Button, Typography } from "@mui/material"
+import { Box, Button, Typography as T} from "@mui/material"
 import { useContext, useState } from "react";
 import { ResultContext } from "../../App";
 
-const boxStyle = {
-    border: '1px solid black',
+const outerBoxStyle = {
+    display: 'flex',
     flex: '1 1',
-    p: 3
+    flexDirection: 'column'
+}
+const innerBoxStyle = {
+    minHeight: 70,
+    maxHeight: 300,
+    overflowY: 'auto',
+    flex: '1 1',
+    p: 1
+}
+const displayRequiredAndRemainBoardDataStyle = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    borderBottom: '2px solid rgba(0, 0, 0, 0.1)'
 }
 
 const Display = () => {
@@ -30,7 +42,7 @@ const Display = () => {
         result.forEach(el => {
             boardsBySize[el.size] = boardsBySize[el.size] ? [...boardsBySize[el.size], el] : boardsBySize[el.size] = [el]
             if (!counter[el.type])  {
-                counter[el.type] = 0;
+                counter[`${el.type} (${el.size})`] = 0;
             }
         })
         for (let size in boardsBySize) {
@@ -40,13 +52,12 @@ const Display = () => {
                 }
             })
         }
-        console.log(totalBoards);        
         for (let key in totalBoards) {
             const boarsOfCurrentSize = totalBoards[key];
             for ( let i = 0; i < boarsOfCurrentSize.length; i++) {
-                const {length, type} = boarsOfCurrentSize[i];
+                const {length, type, size} = boarsOfCurrentSize[i];
                     if (length > 3000) {
-                    counter[type]++
+                    counter[`${type} (${size})`]++
                     remains[key] = remains[key] ? [...remains[key], 6000 - length] : [6000 - length]
                 } else {
                     if (remains[key]) {
@@ -59,11 +70,11 @@ const Display = () => {
                         if (flag) {
                             remains[key][index] -= length
                         } else {
-                            counter[type]++;
+                            counter[`${type} (${size})`]++;
                             remains[key] = remains[key] ? [...remains[key], 6000 - length] : [6000 - length]
                         }
                     } else {
-                        counter[type]++;
+                        counter[`${type} (${size})`]++;
                         remains[key] = [6000 - length]
                     }
                     
@@ -73,7 +84,6 @@ const Display = () => {
         for (let key in remains) {
             remains[key] = Object.entries(formationRemainsData(remains[key]))
         }
-
         setCounter(Object.entries(counter))
         setRemains(Object.entries(remains))
     }
@@ -82,28 +92,31 @@ const Display = () => {
 
     return (
         <>
-        <Box sx={boxStyle}> 
-            Потребуется:
-            {
-                counter.map((el,idx) => <Typography key={idx}> Тип: {el[0]} - {el[1]}шт.</Typography>)
-            }
-        </Box>
-        <Box  sx={boxStyle}>
-            Остатки:
-            {
-               remains.map((el,idx) => <Typography key={idx}> Сечение: {el[0]}мм { el[1].map((el, idx) => <Typography key={idx}>&#8226; {el[0]}мм {el[1]}шт.</Typography>)}</Typography>)
-            }
-        </Box>
-
-        <Button 
-            sx={{position: 'absolute', bottom: 20, right: 44 }}
-            variant="contained" 
-            onClick={() => {calcResult(result)}
-        }>
-            Calc
-        </Button>
-        </>
-        
+            <Box sx={{display: 'flex', mb: 1}}>
+                <Box sx={outerBoxStyle}> 
+                    <T sx={{mx: 1, pt: 1, borderBottom: '2px solid rgba(0, 0, 0, 0.3)'}}>Потребуется:</T>
+                    <Box sx={innerBoxStyle}>
+                        {
+                            counter.map((el,idx) => <Box  key={idx} sx={displayRequiredAndRemainBoardDataStyle}><T> {el[0]} </T> <T> {el[1]} шт. </T></Box>)
+                        }
+                    </Box>
+                </Box>
+                <Box  sx={outerBoxStyle}>
+                    <T sx={{mx: 1, pt: 1, borderBottom: '2px solid rgba(0, 0, 0, 0.3)'}}>Остатки:</T>
+                    <Box sx={innerBoxStyle}>
+                        {
+                        remains.map((el,idx) =><Box key={idx} sx={displayRequiredAndRemainBoardDataStyle}><T> {el[0]}</T>  <T> { el[1].map((el, idx) => <T key={idx}> {el[0]}мм {el[1]}шт.</T>)}</T></Box>)
+                        }
+                    </Box>           
+                </Box>
+            </Box> 
+            <Button 
+                variant="contained" 
+                onClick={() => {calcResult(result)}
+            }>
+                Calc
+            </Button>
+        </>  
     )
 }
    
