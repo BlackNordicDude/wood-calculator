@@ -1,5 +1,5 @@
-import { Box, Button, Typography as T} from "@mui/material"
-import { useContext, useState } from "react";
+import { Box, Typography as T} from "@mui/material"
+import { useContext, useEffect, useState } from "react";
 import { ResultContext } from "../../App";
 
 const outerBoxStyle = {
@@ -21,7 +21,9 @@ const displayRequiredAndRemainBoardDataStyle = {
 }
 
 const Display = () => {
+
     const result = useContext(ResultContext)
+
     const [counter, setCounter] = useState([])
     const [remains, setRemains] = useState([]);
 
@@ -84,9 +86,20 @@ const Display = () => {
         for (let key in remains) {
             remains[key] = Object.entries(formationRemainsData(remains[key]))
         }
-        setCounter(Object.entries(counter))
+        const totalCounter = Object.entries(counter).map(el => {
+            const x = el[0].split(' ')
+            x.splice(1, 0, 'мм ')
+            return [x.join(''), el[1]]
+        })
+
+        setCounter(totalCounter)
         setRemains(Object.entries(remains))
     }
+
+    useEffect(() => {
+        calcResult(result)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     
 
@@ -110,12 +123,6 @@ const Display = () => {
                     </Box>           
                 </Box>
             </Box> 
-            <Button 
-                variant="contained" 
-                onClick={() => {calcResult(result)}
-            }>
-                Calc
-            </Button>
         </>  
     )
 }
