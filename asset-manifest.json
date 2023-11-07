@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/wood-calculator/static/css/main.e98c804e.css",
-    "main.js": "/wood-calculator/static/js/main.1b1ef493.js",
+    "main.js": "/wood-calculator/static/js/main.159bd118.js",
     "index.html": "/wood-calculator/index.html",
     "main.e98c804e.css.map": "/wood-calculator/static/css/main.e98c804e.css.map",
-    "main.1b1ef493.js.map": "/wood-calculator/static/js/main.1b1ef493.js.map"
+    "main.159bd118.js.map": "/wood-calculator/static/js/main.159bd118.js.map"
   },
   "entrypoints": [
     "static/css/main.e98c804e.css",
-    "static/js/main.1b1ef493.js"
+    "static/js/main.159bd118.js"
   ]
 }
